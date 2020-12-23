@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Utils (
+module Data.Logic.Utils (
   -- * List
   safeHead
 , safeLast

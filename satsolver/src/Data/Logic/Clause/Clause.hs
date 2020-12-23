@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Clause (
+module Data.Logic.Clause (
   -- * type
   Clause(..)
 
@@ -18,9 +18,9 @@ module Data.Algorithm.SatSolver.Clause (
 -- , getVars
 ) where
 
-  import qualified Data.Algorithm.SatSolver.Lit   as Lit
-  import qualified Data.Algorithm.SatSolver.Utils as Utils
-  import qualified Data.Algorithm.SatSolver.Var   as Var
+  import qualified Data.Logic.Lit   as Lit
+  import qualified Data.Logic.Utils as Utils
+  import qualified Data.Logic.Var   as Var
   import qualified Data.Foldable                  as F
   import qualified Data.List                      as L
   import qualified Data.List.Split                as L.Split

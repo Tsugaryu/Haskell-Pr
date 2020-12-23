@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Lit.Some (
+module Data.Logic.Lit.Some (
   -- * Testing
   negLit1, posLit1
 , negLit2, posLit2
@@ -15,8 +15,8 @@ module Data.Algorithm.SatSolver.Lit.Some (
 , negLitEvtC, posLitEvtC
 ) where
 
-  import qualified Data.Algorithm.SatSolver.Lit      as Lit
-  import qualified Data.Algorithm.SatSolver.Var.Some as Var.Some
+  import qualified Data.Logic.Lit      as Lit
+  import qualified Data.Logic.Var.Some as Var.Some
 
   negLit1 :: Lit.Lit Int
   negLit1 = Lit.mkNeg Var.Some.var1

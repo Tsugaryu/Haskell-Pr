@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Fml.Some (
+module Data.Logic.Fml.Some (
   -- * Testing Var Int
   fml1
 , fml2
@@ -17,9 +17,9 @@ module Data.Algorithm.SatSolver.Fml.Some (
 , fmlEvt2
 ) where
 
-  import qualified Data.Algorithm.SatSolver.Clause   as Clause
-  import qualified Data.Algorithm.SatSolver.Fml      as Fml
-  import qualified Data.Algorithm.SatSolver.Lit.Some as Lit.Some
+  import qualified Data.Logic.Clause   as Clause
+  import qualified Data.Logic.Fml      as Fml
+  import qualified Data.Logic.Lit.Some as Lit.Some
 
   -- |Satisfiable empty CNF formula.
   --

@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Var (
+module Data.Logic.Var (
   -- * Type
   Var(..)
 

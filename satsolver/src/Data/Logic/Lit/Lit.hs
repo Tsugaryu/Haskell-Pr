@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Lit (
+module Data.Logic.Lit (
   -- * Type
   Lit(..)
 
@@ -15,8 +15,8 @@ module Data.Algorithm.SatSolver.Lit (
 , toBool
 ) where
 
-  import qualified Data.Algorithm.SatSolver.Utils as Utils
-  import qualified Data.Algorithm.SatSolver.Var as Var
+  import qualified Data.Logic.Utils as Utils
+  import qualified Data.Logic.Var as Var
 
   -- |'Lit' type
   data Lit a = Neg (Var.Var a) | Pos (Var.Var a) deriving (Eq)

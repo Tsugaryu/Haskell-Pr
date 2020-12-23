@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Fml (
+module Data.Logic.Fml (
   -- * type
   Fml(..)
 
@@ -32,10 +32,10 @@ where
   import qualified Data.Set                        as S
   import qualified Data.Tuple                      as T
 
-  import qualified Data.Algorithm.SatSolver.Clause as Clause
-  import qualified Data.Algorithm.SatSolver.Lit    as Lit
-  import qualified Data.Algorithm.SatSolver.Utils  as Utils
-  import qualified Data.Algorithm.SatSolver.Var    as Var
+  import qualified Data.Logic.Clause as Clause
+  import qualified Data.Logic.Lit    as Lit
+  import qualified Data.Logic.Utils  as Utils
+  import qualified Data.Logic.Var    as Var
 
   -- | 'Fml' type
   newtype Fml a = Fml { getClauses :: [Clause.Clause a] }

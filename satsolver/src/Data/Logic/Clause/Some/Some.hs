@@ -1,4 +1,4 @@
-module Data.Algorithm.SatSolver.Clause.Some (
+module Data.Logic.Clause.Some (
   -- * Testing
   clause1
 , clause2
@@ -11,8 +11,8 @@ module Data.Algorithm.SatSolver.Clause.Some (
 , clause9
 ) where
 
-import qualified Data.Algorithm.SatSolver.Clause   as Clause
-import qualified Data.Algorithm.SatSolver.Lit.Some as Lit.Some
+import qualified Data.Logic.Clause   as Clause
+import qualified Data.Logic.Lit.Some as Lit.Some
 
 clause1 :: Clause.Clause Int
 clause1 = Clause.mk []
