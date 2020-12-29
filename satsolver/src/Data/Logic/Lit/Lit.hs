@@ -1,4 +1,4 @@
-module Data.Logic.Lit (
+module Data.Logic.Lit.Lit (
   -- * Type
   Lit(..)
 
@@ -15,8 +15,8 @@ module Data.Logic.Lit (
 , toBool
 ) where
 
-  import qualified Data.Logic.Utils as Utils
-  import qualified Data.Logic.Var as Var
+  import qualified Data.Logic.Utils.Utils as Utils
+  import qualified Data.Logic.Var.Var as Var
 
   -- |'Lit' type
   data Lit a = Neg (Var.Var a) | Pos (Var.Var a) deriving (Eq)

@@ -1,4 +1,4 @@
-module Data.Logic.Var.Some (
+module Data.Logic.Var.Some.Some (
   -- * Testing Var Int
   var1
 , var2
@@ -16,7 +16,7 @@ module Data.Logic.Var.Some (
 , varEvtC
 ) where
 
-  import qualified Data.Logic.Var as Var
+  import qualified Data.Logic.Var.Var as Var
 
   var1 :: Var.Var Int
   var1 = Var.mk 1

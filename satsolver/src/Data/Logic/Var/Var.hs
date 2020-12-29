@@ -1,4 +1,4 @@
-module Data.Logic.Var (
+module Data.Logic.Var.Var (
   -- * Type
   Var(..)
 

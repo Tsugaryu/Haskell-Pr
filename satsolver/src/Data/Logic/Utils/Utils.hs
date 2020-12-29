@@ -1,4 +1,4 @@
-module Data.Logic.Utils (
+module Data.Logic.Utils.Utils (
   -- * List
   safeHead
 , safeLast
