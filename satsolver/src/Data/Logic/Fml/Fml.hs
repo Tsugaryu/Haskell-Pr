@@ -282,3 +282,12 @@ toCCNF a = switchAlgo  (toCNF a)
 
 isCCNF :: Fml a -> Bool
 isCCNF (And p q) = isOneClause p && isCCNF q
+
+--{---Aller plus loin
+--Une fonction de comparaison risque d'être utile pour les cas And/Or p p
+--simplify :: Fml a -> Fml a
+--simplify (And   p q) = And (simplify p)( simplify q)
+--simplify (Or   p q) = Or (simplify p)  (simplify q)
+--simplify (And p p )= p
+--simplify (Or p p )= p
+--simplify(Not (Not p)) = p-}

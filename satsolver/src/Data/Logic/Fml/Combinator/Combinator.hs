@@ -54,23 +54,24 @@ multAnd elements = Just ( multAndContent elements)
 
 fromVarToFml :: [Var.Var a] -> [Fml.Fml a]
 fromVarToFml (elt : elements) = [Fml.Final ( elt )] ++ fromVarToFml elements
-fromVarToFmlWithNegValues :: [Var.Var a] -> [Fml.Fml a]
-fromVarToFmlWithNegValues (elt : elements) = [Fml.Final ( elt ) , Fml.Not (Fml.Final ( elt ) ) ] ++ fromVarToFmlWithNegValues elements
+
+fromVarToNegFml :: [Var.Var a] -> [Fml.Fml a]
+fromVarToNegFml (elt : elements) = [ Fml.Not (Fml.Final ( elt ) ) ] ++ fromVarToNegFml elements
 -- |’allOf’ @vs@ returns a formula that is satisfiable iff all variables
 -- in @vs@ are true. The function returns @Nothing@ if @vs@ is the empty list. |
 
 --Toutes les variables sont True si on effectue l'operation suivantes A V Not A
-
+--Correction allOf : But : on considère une suite de variable formé par des AND est tout le temps True cf affichage sujet
 allOf :: [Var.Var a] -> Maybe (Fml.Fml a)
 allOf [] = Nothing
-allOf elements = multOr (fromVarToFmlWithNegValues elements)
+allOf elements = multAnd (fromVarToFml elements)
 
 -- |’noneOf’ @vs@ returns a formula that is satisfiable if no variable
 -- in @vs@ is true. The function returns @Nothing@ if @vs@ is the empty list.
 
 noneOf :: [Var.Var a] -> Maybe (Fml.Fml a)
 noneOf [] = Nothing
-noneOf  elements = multAnd (fromVarToFmlWithNegValues elements)
+noneOf  elements = multAnd (fromVarToNegFml elements)
 
 -- |’atLeast’ @vs@ @k@ returns a formula that is satisfied iff at least @k@
 -- variables in @vs@ are true. The function returns @Nothing@ if @vs@ is the
@@ -78,9 +79,22 @@ noneOf  elements = multAnd (fromVarToFmlWithNegValues elements)
 -- variables in @vs@.
 
 
+
+composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a])-> Var.Var a ->  [Var.Var a] -> Int -> [Fml.Fml a]
+composeSuccessiveFml func elt [] n = []
+composeSuccessiveFml func elt (x:elements) n = [ multAndContent( func ( [elt] ++ ( take ( n-1) ( tail ( elements ) ) ) ) ) ] ++ composeSuccessiveFml (func) (elt) (drop (n-1) (elements)) n
+--composeSuccessiveFml elt (x:elements) n = [multAndContent(fromVarToFml ([elt] ++ take(n-1 (tail(elements)))) ) ] ++ composeSuccessiveFml elt (drop n-1 elements) n
+
+createFmlList :: ([Var.Var a] -> [Fml.Fml a])-> [Var.Var a] -> Int -> [Fml.Fml a]
+createFmlList func (x:elements) n = composeSuccessiveFml  func x elements n ++ createFmlList func elements n
+
+
+--Qd la fonction sera finie et checké on proposera une amélioration en utilisant allOf
 atLeast :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atLeast [] k = Nothing
-atLeast (elt:elements) k =  Just( Fml.Or( Maybe.fromJust (allOf ( take k elements ))) (Maybe.fromJust (noneOf (drop k elements ))) )
+atLeast [] 0 = Nothing
+atLeast elements k = multOr ( createFmlList fromVarToFml elements k )
+--atLeast (elt:elements) k =  Just( Fml.Or( Maybe.fromJust (allOf ( take k elements ))) (Maybe.fromJust (noneOf (drop k elements ))) )
 --Fml.Or ( Just ( allOf ( take k elements ) ) )   (  Just noneOf (drop k elements )    )
 
 --multAnd ([Fml.Or ( Fml.Final( elt ) ) ( Fml.Not ( Fml.Final ( elt ) ) ) ] ++  fromVarToFml elements)
@@ -98,27 +112,35 @@ atLeastOne elements = atLeast elements 1
 -- variables in @vs@ are true. The function returns @Nothing@ if @vs@ is the
 -- empty list or @k@ is non-positive or @k@ is larger than the number of
 -- variables in @vs@.
-
---atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
---atMost [] = Nothing
---TODO
+--définir le cas ou n = 1
+atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
+atMost [] n  = Nothing
+atMost elements n=  multOr ( createFmlList fromVarToNegFml elements n )
 -- |’atMostOne’ @vs@ returns a formula that is satisfiable iff at most one
 -- variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
 -- empty list.
 
---atMostOne :: [Var.Var a] -> Maybe (Fml.Fml a)
---atMostOne [] = Nothing
---TODO
+atMostOne :: [Var.Var a] -> Maybe (Fml.Fml a)
+atMostOne [] = Nothing
+atMostOne elements = atMost elements 1
 -- |’exactly’ @vs@ @k@ returns a formula that is satisfiable iff exactly @k@
 -- variables in @vs@ are true. The function returns @Nothing@ if @vs@ is the
 -- empty list or @k@ is non-positive or @k@ is larger than the number of
 -- variables in @vs@
 
---exactly :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
---exactly [] =Nothing
+exactly :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
+exactly [] n =Nothing
+exactly elements n = Just(Fml.And ( get (atLeast (elements) (n)) ) (get (atMost (elements) (n)) ) )
+
+--
 -- |’exactlyOne’ @vs@ returns a formula that is satisfiable iff exactly one
 --  variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
 -- empty list.
+get :: Maybe (Fml.Fml a) -> Fml.Fml a
+get a = case a of
+        Just x ->x
 
---exactlyOne :: [Var.Var a] -> Maybe (Fml.Fml a)
---exactlyOne [] = Nothing
+
+exactlyOne :: [Var.Var a] -> Maybe (Fml.Fml a)
+exactlyOne [] = Nothing
+exactlyOne elements = Just(Fml.And ( (get(atLeastOne(elements))) ) ( get (atMostOne(elements)) ))
