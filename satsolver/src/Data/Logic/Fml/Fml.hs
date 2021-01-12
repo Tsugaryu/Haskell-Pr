@@ -89,15 +89,15 @@ prettyFormat (Final v)   = show v
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
 varsWrapper :: (Eq a) => Fml a -> [Var.Var a]
-varsWrapper (And   p q) = (vars p ++ vars q)
-varsWrapper (NAnd  p q) = (vars p ++ vars q)
-varsWrapper (Or    p q) = (vars p ++ vars q)
-varsWrapper (NOr   p q) = (vars p ++ vars q)
-varsWrapper (XOr   p q) = (vars p ++ vars q)
-varsWrapper (XNOr  p q) = (vars p ++ vars q)
-varsWrapper (Imply p q) = (vars p ++ vars q)
-varsWrapper (Equiv p q) = (vars p ++ vars q)
-varsWrapper (Not   p)   = vars p
+varsWrapper (And   p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (NAnd  p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (Or    p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (NOr   p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (XOr   p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (XNOr  p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (Imply p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (Equiv p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (Not   p)   = varsWrapper p
 varsWrapper (Final v)   = [v]
 
 vars :: (Eq a) => Fml a -> [Var.Var a]
@@ -110,14 +110,14 @@ vars = List.nub . varsWrapper
 ---- Pour toutes formulesPetQet tout connecteur logique◦,
 ---- la profondeur de(P◦Q)est égale à un plus lemaximum des profondeurs des formulesPetQ
 depth :: (Num b, Ord b) => Fml a -> b
-depth (And   p q) =  depth p  + depth q + 1
-depth (NAnd  p q) =  depth p  + depth q + 1
-depth (Or    p q) =  depth p  + depth q + 1
-depth (NOr   p q) =  depth p  + depth q + 1
-depth (XOr   p q) =  depth p  + depth q + 1
-depth (XNOr  p q) =  depth p  + depth q + 1
-depth (Imply p q) =  depth p  + depth q + 1
-depth (Equiv p q) =  depth p  + depth q + 1
+depth (And   p q) =  max (depth p)  (depth q ) + 1
+depth (NAnd  p q) =  max (depth p)  (depth q )+ 1
+depth (Or    p q) =  max (depth p)  (depth q )+ 1
+depth (NOr   p q) =  max (depth p)  (depth q )+ 1
+depth (XOr   p q) =  max (depth p)  (depth q )+ 1
+depth (XNOr  p q) =  max (depth p)  (depth q )+ 1
+depth (Imply p q) =  max (depth p)  (depth q )+ 1
+depth (Equiv p q) =  max (depth p)  (depth q )+ 1
 depth (Not   p)   = depth p + 1
 depth (Final v)   = 0
 ----NNF
@@ -160,6 +160,7 @@ toNNF = delNegation . deMorgan . convertConnector
 ----A_(B^C)=(A_B)^(A_C)
 ----AnB OK
 --
+
 distribVToN:: Fml a -> Fml a
 distribVToN (Or ( p ) ( And q r ) ) = And (distribVToN(Or ( distribVToN p) ( distribVToN q)) ) (distribVToN(Or ( distribVToN p) (distribVToN r)))
 distribVToN (Or ( And q r ) ( p ) ) = And (Or ( distribVToN p) ( distribVToN q) ) (Or ( distribVToN p) (distribVToN r))
