@@ -16,12 +16,12 @@ multOr
   -- * Multiplication Function
 
 -- * Filter function
---,exactlyOne
---,exactly
---,atMostOne
+,exactlyOne
+,exactly
+,atMostOne
 ,atLeast
---,atLeastOne
---,atMost
+,atLeastOne
+,atMost
 ) where
 import qualified  Data.Logic.Fml.Fml    as Fml
 import qualified  Data.Maybe            as Maybe

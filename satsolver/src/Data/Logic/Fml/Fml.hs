@@ -85,7 +85,6 @@ prettyFormat (Equiv p q) = "(" ++ prettyFormat p ++ " <=> " ++ prettyFormat q ++
 prettyFormat (Not   p)   = "-" ++ prettyFormat p
 prettyFormat (Final v)   = show v
 
---RESTE DES METHODES A FAIRE PAR NOUS MEME
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
 varsWrapper :: (Eq a) => Fml a -> [Var.Var a]
