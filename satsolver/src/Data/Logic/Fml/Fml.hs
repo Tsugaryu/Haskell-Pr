@@ -241,6 +241,7 @@ isDNF (Not (And p q)) = False
 isDNF (Not p) = True
 isDNF (Final v) = True
 
+
 ---- |’toUniversalNAnd’ @p@ returns a NAND-formula that is equivalent-- to formula @p@.1
 toNAND :: Fml a -> Fml a
 toNAND (Not p) = NAnd (toNAND p) (toNAND p) --NAND = fleche du haut NOR fleche du bas
@@ -249,7 +250,7 @@ toNAND (Or p q) = NAnd (NAnd (toNAND p) (toNAND p)) (NAnd (toNAND q) (toNAND q))
 
 --
 toUniversalNAnd :: Fml a -> Fml a
-toUniversalNAnd fml = toNAND (toNNF fml)
+toUniversalNAnd  = toNAND . toNNF
 
 --
 toNOR :: Fml a -> Fml a
@@ -259,7 +260,7 @@ toNOR (Or p q) = NOr (NOr (toNOR p) (toNOR q)) (NOr (toNOR p) (toNOR q))
 
 --
 toUniversalNOr :: Fml a -> Fml a
-toUniversalNOr fml = toNOR (toNNF fml)
+toUniversalNOr = toNOR . toNNF
 
 isUniversalNAnd :: Fml a -> Bool
 isUniversalNAnd (NAnd p q) = isUniversalNAnd p && isUniversalNAnd q
