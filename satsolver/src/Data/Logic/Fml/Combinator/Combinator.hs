@@ -41,7 +41,6 @@ multOr :: [Fml.Fml a] -> Maybe (Fml.Fml a)
 multOr [] = Nothing
 multOr elements = Just (multOrContent elements)
 
---Just (Fml.Or (elt) ( Just  multOr elements  ))
 
 -- | ’multAnd’ @fs@ returns the conjunction of the formulas in @fs.
 --  It returns @Nothing@ if @fs@ is the empty list.
@@ -63,8 +62,6 @@ fromVarToNegFml (elt : elements) = Fml.Not (Fml.Final elt) : fromVarToNegFml ele
 -- | ’allOf’ @vs@ returns a formula that is satisfiable iff all variables
 --  in @vs@ are true. The function returns @Nothing@ if @vs@ is the empty list. |
 
---Toutes les variables sont True si on effectue l'operation suivantes A V Not A
---Correction allOf : But : on considère une suite de variable formé par des AND est tout le temps True cf affichage sujet
 allOf :: [Var.Var a] -> Maybe (Fml.Fml a)
 allOf [] = Nothing
 allOf elements = multAnd (fromVarToFml elements)
@@ -91,8 +88,9 @@ createFmlList func (x : elements) n = composeSuccessiveFml func x elements n ++ 
 --Qd la fonction sera finie et checké on proposera une amélioration en utilisant allOf
 atLeast :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atLeast [] k = Nothing
---atLeast [] 0 = Nothing
-atLeast elements k = multOr (createFmlList fromVarToFml elements k)
+atLeast elements k = if k<=0
+                        then Nothing
+                        else multOr (createFmlList fromVarToFml elements k)
 
 --atLeast (elt:elements) k =  Just( Fml.Or( Maybe.fromJust (allOf ( take k elements ))) (Maybe.fromJust (noneOf (drop k elements ))) )
 --Fml.Or ( Just ( allOf ( take k elements ) ) )   (  Just noneOf (drop k elements )    )
@@ -113,7 +111,9 @@ atLeastOne elements = atLeast elements 1
 -- définir le cas ou n = 1
 atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atMost [] n = Nothing
-atMost elements n = multOr (createFmlList fromVarToNegFml elements n)
+atMost elements n =if n<=0
+                    then Nothing
+                    else multOr (createFmlList fromVarToNegFml elements n)
 
 -- | ’atMostOne’ @vs@ returns a formula that is satisfiable iff at most one
 --  variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
