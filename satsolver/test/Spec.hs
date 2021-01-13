@@ -1,116 +1,99 @@
 -- Documentation stack test :
 -- https://github.com/Originate/guide/blob/master/haskell/stack-tutorial.md
 -- https://hackage.haskell.org/package/tasty-1.4.0.3/docs/Test-Tasty.html
-module Spec where
-
 import Test.Tasty
 import Test.Tasty.HUnit
 
 import qualified Data.Logic.Fml.Fml as Fml
 import qualified Data.Logic.Fml.Combinator.Combinator as Combinator
+import qualified Data.Logic.Var.Var as Var
 
-main :: IO ()
-main = do
-  defaultMain (testGroup "Fml tests" [varsTest])--, depthTest, toNNFTest, toCNFTest, toDNFTest, isNNFTest, isCNFTest, isDNFTest, toUniversalNAndTest, toUniversalNOrTest, isUniversalNAndTest, isUniversalNOrTest, toCCNFTest, isCCNFTest])
---defaultMain (testGroup "Combinator tests" [multOrTest], multAndTest, allOfTest, noneOfTest, atLeastTest, atLeastOneTest, atMostTest, atMostOneTest, exactlyTest, exactlyOneTest])
+--import Data.List
+--import Data.Ord
+
+main = putStrLn (Fml.prettyFormat $ Combinator.get (Combinator.atMostOne [Var.mk i | i <- [1..4]]))
+
+{-
+main = defaultMain tests
+
+tests :: TestTree
+tests = testGroup "Tests" [fmlTests, combinatorTests]
 
 ------------------------------ Fml tests ---------------------------------
+fmlTests = testGroup "Fml tests"
+  [ testCase "Test vars function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-varsTest :: TestTree
-varsTest = testCase "Testing vars function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
-{-
-depthTest :: TestTree
-depthTest = testCase "Testing depth function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test depth function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toNNFTest :: TestTree
-toNNFTest = testCase "Testing toNNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toNNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toCNFTest :: TestTree
-toCNFTest = testCase "Testing toCNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toCNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toDNFTest :: TestTree
-toDNFTest = testCase "Testing toDNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toDNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isNNFTest :: TestTree
-isNNFTest = testCase "Testing isNNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isNNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isCNFTest :: TestTree
-isCNFTest = testCase "Testing isCNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isCNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isDNFTest :: TestTree
-isDNFTest = testCase "Testing isDNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isDNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toUniversalNAndTest :: TestTree
-toUniversalNAndTest = testCase "Testing toUniversalNAnd function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toUniversalNAnd function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toUniversalNOrTest :: TestTree
-toUniversalNOrTest = testCase "Testing toUniversalNOr function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toUniversalNOr function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isUniversalNAndTest :: TestTree
-isUniversalNAndTest = testCase "Testing isUniversalNAnd function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isUniversalNAnd function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isUniversalNOrTest :: TestTree
-isUniversalNOrTest = testCase "Testing isUniversalNOr function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isUniversalNOr function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-toCCNFTest :: TestTree
-toCCNFTest = testCase "Testing toCCNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test toCCNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-isCCNFTest :: TestTree
-isCCNFTest = testCase "Testing isCCNF function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test isCCNF function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
+  ]
 
 -------------------------- Combinator tests ------------------------------
+combinatorTests = testGroup "Combinator tests"
+  [ testCase "Test multOr function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
-multOrTest :: TestTree
-multOrTest = testCase "Testing multOr function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test multAnd function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---multAndTest :: TestTree
---multAndTest = testCase "Testing multAnd function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test allOf function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---allOfTest :: TestTree
---allOfTest = testCase "Testing allOf function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test noneOf function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---noneOfTest :: TestTree
---noneOfTest = testCase "Testing noneOf fuunction"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test atLeast function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---atLeastTest :: TestTree
---atLeastTest = testCase "Testing atLeast function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test atLeastOne function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---atLeastOneTest :: TestTree
---atLeastOneTest = testCase "Testing atLeastOne function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test atMost function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---atMostTest :: TestTree
---atMostTest = testCase "Testing atMost function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test atMostOne function" $
+      assertEqual "Test atMostOne function" "Just \"((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) +(-2 . (-3 . -4)))))\"" (Fml.prettyFormat $ Combinator.get (Combinator.atMostOne [Var.mk i | i <- [1 .. 4]]))
 
---atMostOneTest :: TestTree
---atMostOneTest = testCase "Testing atMostOne function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test exactly function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
 
---exactlyTest :: TestTree
---exactlyTest = testCase "Testing exactly function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
-
---exactlyOneTest :: TestTree
---exactlyOneTest = testCase "Testing exactlyOne function"
-  --(assertEqual "Should add 5 to get 10" 10 (multOr 5))
+  , testCase "Test exactlyOne function" $
+      [1, 2, 3] `compare` [1,2] @?= GT -- TODO
+  ]
   -}
