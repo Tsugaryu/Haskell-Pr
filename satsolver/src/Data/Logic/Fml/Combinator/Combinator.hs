@@ -113,7 +113,7 @@ atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atMost [] n = Nothing
 atMost elements n =if n<=0
                     then Nothing
-                    else multOr (createFmlList fromVarToNegFml elements n)
+                    else multOr (createFmlList fromVarToNegFml elements (length ( elements ) - n))
 
 -- | ’atMostOne’ @vs@ returns a formula that is satisfiable iff at most one
 --  variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
