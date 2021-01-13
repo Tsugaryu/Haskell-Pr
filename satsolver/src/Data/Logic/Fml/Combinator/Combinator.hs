@@ -8,6 +8,7 @@ multOr
 ,multAnd
 ,allOf
 ,noneOf
+,get
   -- * testing
 
 
