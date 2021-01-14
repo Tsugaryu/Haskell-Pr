@@ -36,7 +36,7 @@ import qualified  Data.Logic.Var.Var    as Var
 --  >>> multOr [Fml.inal (Var.mk i) | i <- [1..4]]
 --  Just (Or (Final 1) (Or (Final 2) (Or (Final 3) (Final 4)))
 multOrContent :: [Fml.Fml a] -> Fml.Fml a
-multOrContent (x : [])= x
+multOrContent [x] = x
 multOrContent (elt : elements) = Fml.Or elt (multOrContent elements)
 
 multOr :: [Fml.Fml a] -> Maybe (Fml.Fml a)
@@ -50,7 +50,7 @@ multOr elements = Just (multOrContent elements)
 --  multAnd [Fml.Final (Var.mk i) | i <- [1..4]]
 --  Just (And (Final 1) (And (Final 2) (And (Final 3) (Final 4)))
 multAndContent :: [Fml.Fml a] -> Fml.Fml a
-multAndContent (x : []) = x
+multAndContent [x] = x
 multAndContent (elt : elements) = Fml.And elt (multAndContent elements)
 
 multAnd :: [Fml.Fml a] -> Maybe (Fml.Fml a)
@@ -59,12 +59,10 @@ multAnd [] = Nothing
 multAnd elements = Just (multAndContent elements)
 
 fromVarToFml :: [Var.Var a] -> [Fml.Fml a]
-fromVarToFml [] = []
-fromVarToFml (elt : elements) = Fml.Final elt : fromVarToFml elements
+fromVarToFml = map Fml.Final
 
 fromVarToNegFml :: [Var.Var a] -> [Fml.Fml a]
-fromVarToNegFml [] = []
-fromVarToNegFml (elt : elements) = Fml.Not (Fml.Final elt) : fromVarToNegFml elements
+fromVarToNegFml = map (Fml.Not . Fml.Final)
 
 -- | ’allOf’ @vs@ returns a formula that is satisfiable iff all variables
 --  in @vs@ are true. The function returns @Nothing@ if @vs@ is the empty list. |
@@ -102,7 +100,7 @@ composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> [Var.Var 
 composeSuccessiveFml func elt [] n = []
 composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func ( elt ++ [x] ) ]  --return le res
 composeSuccessiveFml func elt [x] n = [ multAndContent $ func ( elt ++ [x] )]
-composeSuccessiveFml func elt (x : elements) n =  if length (elements) < (n - 1)
+composeSuccessiveFml func elt (x : elements) n =  if length elements < (n - 1)
                                                   then []
                                                   else composeSuccessiveFml func ( elt ++ [x] ) elements (n - 1) ++ composeSuccessiveFml func elt (tail elements) (n - 1)
 
@@ -138,7 +136,7 @@ atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atMost [] n = Nothing
 atMost elements n =if n<=0
                     then Nothing
-                    else multOr (createFmlList fromVarToNegFml elements (length ( elements ) - n))
+                    else multOr (createFmlList fromVarToNegFml elements (length elements - n))
 
 -- | ’atMostOne’ @vs@ returns a formula that is satisfiable iff at most one
 --  variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
@@ -161,9 +159,7 @@ exactly elements n = Just (Fml.And (get (atLeast elements n)) (get (atMost eleme
 --   variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
 --  empty list.
 get :: Maybe (Fml.Fml a) -> Fml.Fml a
-get a = case a of
-  Just x -> x
-  Nothing -> undefined
+get = Maybe.fromMaybe undefined
 
 exactlyOne :: [Var.Var a] -> Maybe (Fml.Fml a)
 exactlyOne [] = Nothing

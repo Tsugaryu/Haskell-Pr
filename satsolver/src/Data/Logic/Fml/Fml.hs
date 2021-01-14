@@ -13,7 +13,7 @@ module Data.Logic.Fml.Fml
     -- * testing
     isNNF,
     isCNF,
-    --, isCCNF
+    isCCNF,
     isDNF,
 
     -- * querying
@@ -91,14 +91,14 @@ prettyFormat (Final v) = show v
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
 varsWrapper :: (Eq a) => Fml a -> [Var.Var a]
-varsWrapper (And   p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (NAnd  p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (Or    p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (NOr   p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (XOr   p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (XNOr  p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (Imply p q) = (varsWrapper p ++ varsWrapper q)
-varsWrapper (Equiv p q) = (varsWrapper p ++ varsWrapper q)
+varsWrapper (And   p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (NAnd  p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (Or    p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (NOr   p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (XOr   p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (XNOr  p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (Imply p q) = varsWrapper p ++ varsWrapper q
+varsWrapper (Equiv p q) = varsWrapper p ++ varsWrapper q
 varsWrapper (Not   p)   = varsWrapper p
 varsWrapper (Final v)   = [v]
 
