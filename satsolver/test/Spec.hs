@@ -101,14 +101,14 @@ combinatorTests = testGroup "Combinator tests"
   , testCase "Test atMostOne function" $
       assertEqual "Test atMostOne function" "((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4)))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMostOne [Var.mk i | i <- [1 .. 4]]))
 
-  , testCase "Test exactly function" $
+  , testCase "Test exactly function 0" $
       assertEqual "Test exactly function" True ( isNothing (Combinator.exactly [Var.mk i | i <- [1..4]] 0))
 
   , testCase "Test exactly function" $
       assertEqual "Test exactly function" "((1 + (2 + (3 + 4))) . ((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 1))
 
   , testCase "Test exactly function" $
-      assertEqual "Test exactly function" "(((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4)))))) .((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) +(-3 . -4)))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 2))
+      assertEqual "Test exactly function" "(((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4)))))) . ((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) + (-3 . -4)))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 2))
 
   , testCase "Test exactlyOne function" $
       assertEqual "Test exactlyOne function" "((1 + (2 + (3 + 4))) . ((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactlyOne [Var.mk i | i <- [1..4]]))

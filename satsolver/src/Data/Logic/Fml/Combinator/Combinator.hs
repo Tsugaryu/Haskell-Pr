@@ -122,7 +122,9 @@ createFmlList :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> Int -> Int -> [F
 --createFmlList func [x] effectiveSize n  = composeSuccessiveFml func [x] [x] effectiveSize (n - 1)
 --createFmlList func (x : elements) effectiveSize n = composeSuccessiveFml func [x] elements effectiveSize (n - 1) ++ createFmlList func elements effectiveSize n
 createFmlList func [] effectiveSize n = []
-createFmlList func [x] effectiveSize n  = composeSuccessiveFml func [x] [x] effectiveSize (n - 1)
+createFmlList func [x] effectiveSize n  = if length [x] <= n-1
+                                          then []
+                                          else composeSuccessiveFml func [x] [x] effectiveSize (n - 1)
 createFmlList func (x : elements) effectiveSize n = composeSuccessiveFml func [x] elements effectiveSize (n - 1) ++ createFmlList func elements effectiveSize n
 
 --Qd la fonction sera finie et checké on proposera une amélioration en utilisant allOf
@@ -169,7 +171,9 @@ atMostOne elements = atMost elements 1
 --  variables in @vs@
 exactly :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 exactly [] n = Nothing
-exactly elements n = Just (Fml.And (get (atLeast elements n)) (get (atMost elements n)))
+exactly elements n = if n<=0
+                     then Nothing
+                     else  Just (Fml.And (get (atLeast elements n)) (get (atMost elements n)))
 
 --
 
