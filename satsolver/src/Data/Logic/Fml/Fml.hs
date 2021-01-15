@@ -26,6 +26,7 @@ module Data.Logic.Fml.Fml
     -- * Transforming
     toNNF,
     toCNF,
+--    simplify,
     --, toCCNF
     toDNF,
     toUniversalNAnd,
@@ -324,11 +325,15 @@ isCCNF (And p q) = isOneClause p && isCCNF q
 isCCNF f@(Or p q ) = isOneClause f
 isCCNF (Or r (Or p q)) = False
 isCCNF (Final v) = True
+
 --{---Aller plus loin
 --Une fonction de comparaison risque d'être utile pour les cas And/Or p p
 --simplify :: Fml a -> Fml a
---simplify (And   p q) = And (simplify p)( simplify q)
---simplify (Or   p q) = Or (simplify p)  (simplify q)
---simplify (And p p )= p
---simplify (Or p p )= p
---simplify(Not (Not p)) = p-}
+--simplify (And   p q) = if map prettyFormat [p] == map prettyFormat [q]
+--                       then p
+--                       else And (simplify p) (simplify q)
+--simplify (Or   p q) = if fmap (prettyFormat p) == fmap (prettyFormat q)
+--                                             then p
+--                                             else Or (simplify p) (simplify q)
+--simplify (Not (Not p)) = p
+--simplify f@(Final v) = f
