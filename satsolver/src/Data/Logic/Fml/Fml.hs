@@ -18,7 +18,6 @@ module Data.Logic.Fml.Fml
     isUniversalNAnd,
     isUniversalNOr,
 
-
     -- * querying
     depth,
     vars,
@@ -26,8 +25,8 @@ module Data.Logic.Fml.Fml
     -- * Transforming
     toNNF,
     toCNF,
---    simplify,
-    --, toCCNF
+    --simplify,
+    toCCNF,
     toDNF,
     toUniversalNAnd,
     toUniversalNOr,
@@ -322,8 +321,8 @@ toCCNF a = switchAlgo (toCNF a)
 
 isCCNF :: Fml a -> Bool
 isCCNF (And p q) = isOneClause p && isCCNF q
-isCCNF f@(Or p q ) = isOneClause f
 isCCNF (Or r (Or p q)) = False
+isCCNF f@(Or p q) = isOneClause f
 isCCNF (Final v) = True
 
 --{---Aller plus loin

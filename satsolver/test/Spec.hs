@@ -26,23 +26,23 @@ fmlTests = testGroup "Fml tests"
   , testCase "Test depth function" $
       assertEqual "Test depth function" 2 $ Fml.depth (Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Not (Fml.Final (Var.mk "x2"))))
 
-  , testCase "Test toNNF function" $
+  , testCase "Test toUniversalNAnd function" $
       assertEqual "Test toUniversalNAnd function" "((((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\"))) ~. ((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\")))) ~. ((((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\")) ~. (((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\"))))" (Fml.prettyFormat $  Fml.toUniversalNAnd(Fml.XOr (Fml.Final (Var.mk "p")) (Fml.Final (Var.mk "q"))))
 
   , testCase "Test toCNF function" $
-      assertEqual "Test toNNF function" [Var.mk "x1"] $ Fml.vars (Fml.toCNF (Fml.Final (Var.mk "x1")))
+      assertEqual "Test toCNF function" [Var.mk "x1"] $ Fml.vars (Fml.toCNF (Fml.Final (Var.mk "x1")))
 
   , testCase "Test toDNF function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test toDNF function" [Var.mk "x1"] $ Fml.vars (Fml.toDNF (Fml.Final (Var.mk "x1")))
 
   , testCase "Test isNNF function with False Value" $
-      assertEqual "Test isCCNF function" False $ Fml.isNNF(Fml.NAnd (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
+      assertEqual "Test isNNF function" False $ Fml.isNNF(Fml.NAnd (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isCNF function" $
       assertEqual "Test isCCNF function" True $ Fml.isCNF(Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isDNF function" $
-      assertEqual "Test isCCNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
+      assertEqual "Test isDNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
 
   , testCase "Test toUniversalNAnd function" $
      assertEqual "Test toUniversalNAnd function" "((((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\"))) ~. ((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\")))) ~. ((((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\")) ~. (((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\"))))" (Fml.prettyFormat $  Fml.toUniversalNAnd(Fml.XOr (Fml.Final (Var.mk "p")) (Fml.Final (Var.mk "q"))))
@@ -78,37 +78,37 @@ combinatorTests = testGroup "Combinator tests"
       assertEqual "Test noneOf function" "(-1 . (-2 . (-3 . -4)))" (Fml.prettyFormat $ Combinator.get (Combinator.noneOf [Var.mk i | i <- [1..4]]))
 
   , testCase "Test atLeast function with k= 0" $
-      assertEqual "Test atLeast function" True  ( isNothing (Combinator.atLeast [Var.mk i | i <- [1..4]] 0))
+      assertEqual "Test atLeast function with k = 0" True  ( isNothing (Combinator.atLeast [Var.mk i | i <- [1..4]] 0))
 
   , testCase "Test atLeast function with k = 1" $
-      assertEqual "Test atLeast function" "(1 + (2 + (3 + 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 1))
+      assertEqual "Test atLeast function with k = 1" "(1 + (2 + (3 + 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 1))
 
-  , testCase "Test atLeast function 2" $
-      assertEqual "Test atLeast function" "((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 2))
+  , testCase "Test atLeast function with k = 2" $
+      assertEqual "Test atLeast function with k = 2" "((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 2))
 
   , testCase "Test atLeastOne function" $
       assertEqual "Test atLeastOne function" "(1 + (2 + (3 + 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeastOne [Var.mk i | i <- [1..4]]))
 
-  , testCase "Test atMost function" $
-      assertEqual "Test atMost function" True ( isNothing (Combinator.atMost [Var.mk i | i <- [1..4]] 0))
+  , testCase "Test atMost function with k = 0" $
+      assertEqual "Test atMost function with k = 0" True ( isNothing (Combinator.atMost [Var.mk i | i <- [1..4]] 0))
 
-  , testCase "Test atMost function" $
-      assertEqual "Test atMost function" "((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4)))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMost [Var.mk i | i <- [1..4]] 1))
+  , testCase "Test atMost function with k = 1" $
+      assertEqual "Test atMost function with k = 1" "((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4)))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMost [Var.mk i | i <- [1..4]] 1))
 
-  , testCase "Test atMost function 2" $
-      assertEqual "Test atMost function" "((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) + (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMost [Var.mk i | i <- [1..4]] 2))
+  , testCase "Test atMost function with k = 2" $
+      assertEqual "Test atMost function with k = 2" "((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) + (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMost [Var.mk i | i <- [1..4]] 2))
 
   , testCase "Test atMostOne function" $
       assertEqual "Test atMostOne function" "((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4)))))" (Fml.prettyFormat $ Combinator.get (Combinator.atMostOne [Var.mk i | i <- [1 .. 4]]))
 
-  , testCase "Test exactly function 0" $
-      assertEqual "Test exactly function" True ( isNothing (Combinator.exactly [Var.mk i | i <- [1..4]] 0))
+  , testCase "Test exactly function with k = 0" $
+      assertEqual "Test exactly function with k = 0" True ( isNothing (Combinator.exactly [Var.mk i | i <- [1..4]] 0))
 
-  , testCase "Test exactly function" $
-      assertEqual "Test exactly function" "((1 + (2 + (3 + 4))) . ((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 1))
+  , testCase "Test exactly function with k = 1" $
+      assertEqual "Test exactly function with k = 1" "((1 + (2 + (3 + 4))) . ((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 1))
 
-  , testCase "Test exactly function" $
-      assertEqual "Test exactly function" "(((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4)))))) . ((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) + (-3 . -4)))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 2))
+  , testCase "Test exactly function with k = 2" $
+      assertEqual "Test exactly function with k = 2" "(((1 . 2) + ((1 . 3) + ((1 . 4) + ((2 . 3) + ((2 . 4) + (3 . 4)))))) . ((-1 . -2) + ((-1 . -3) + ((-1 . -4) + ((-2 . -3) + ((-2 . -4) + (-3 . -4)))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactly [Var.mk i | i <- [1..4]] 2))
 
   , testCase "Test exactlyOne function" $
       assertEqual "Test exactlyOne function" "((1 + (2 + (3 + 4))) . ((-1 . (-2 . -3)) + ((-1 . (-2 . -4)) + ((-1 . (-3 . -4)) + (-2 . (-3 . -4))))))" (Fml.prettyFormat $ Combinator.get (Combinator.exactlyOne [Var.mk i | i <- [1..4]]))
