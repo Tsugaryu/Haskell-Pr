@@ -45,22 +45,22 @@ fmlTests = testGroup "Fml tests"
       assertEqual "Test isCCNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
 
   , testCase "Test toUniversalNAnd function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+     assertEqual "Test toUniversalNAnd function" "((((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\"))) ~. ((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\")))) ~. ((((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\")) ~. (((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\"))))" (Fml.prettyFormat $  Fml.toUniversalNAnd(Fml.XOr (Fml.Final (Var.mk "p")) (Fml.Final (Var.mk "q"))))
 
   , testCase "Test toUniversalNOr function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test toUniversalNOr function" "((((\"p\" ~+ \"p\") ~+ ((\"q\" ~+ \"q\") ~+ (\"q\" ~+ \"q\"))) ~+ (((\"p\" ~+ \"p\") ~+ (\"p\" ~+ \"p\")) ~+ (\"q\" ~+ \"q\"))) ~+ (((\"p\" ~+ \"p\") ~+ ((\"q\" ~+ \"q\") ~+ (\"q\" ~+ \"q\"))) ~+ (((\"p\" ~+ \"p\") ~+ (\"p\" ~+ \"p\")) ~+ (\"q\" ~+ \"q\"))))" (Fml.prettyFormat $ Fml.toUniversalNOr(Fml.XOr (Fml.Final (Var.mk "p")) (Fml.Final (Var.mk "q"))))
 
   , testCase "Test isUniversalNAnd function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test isUniversalNAnd function" True $ Fml.isUniversalNAnd(Fml.NAnd (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isUniversalNOr function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+       assertEqual "Test isUniversalNOr function" True $ Fml.isUniversalNOr(Fml.NOr (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test toCCNF function" $
       [1, 2, 3] `compare` [1,2] @?= LT -- TODO
 
   , testCase "Test isCCNF function" $
-      assertEqual "Test isCCNF function" True $ Fml.isCCNF(Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
+      assertEqual "Test isCCNF function" True $ Fml.isCCNF(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Or(Fml.Final (Var.mk "x2"))(Fml.Final (Var.mk "x3")) ))
   ]
 
 -------------------------- Combinator tests ------------------------------

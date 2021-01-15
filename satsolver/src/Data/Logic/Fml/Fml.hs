@@ -15,6 +15,9 @@ module Data.Logic.Fml.Fml
     isCNF,
     isCCNF,
     isDNF,
+    isUniversalNAnd,
+    isUniversalNOr,
+
 
     -- * querying
     depth,
@@ -87,6 +90,7 @@ prettyFormat (Imply p q) = "(" ++ prettyFormat p ++ " => " ++ prettyFormat q ++ 
 prettyFormat (Equiv p q) = "(" ++ prettyFormat p ++ " <=> " ++ prettyFormat q ++ ")"
 prettyFormat (Not p) = "-" ++ prettyFormat p
 prettyFormat (Final v) = show v
+
 
 
 
@@ -317,7 +321,9 @@ toCCNF a = switchAlgo (toCNF a)
 
 isCCNF :: Fml a -> Bool
 isCCNF (And p q) = isOneClause p && isCCNF q
-
+isCCNF f@(Or p q ) = isOneClause f
+isCCNF (Or r (Or p q)) = False
+isCCNF (Final v) = True
 --{---Aller plus loin
 --Une fonction de comparaison risque d'être utile pour les cas And/Or p p
 --simplify :: Fml a -> Fml a
