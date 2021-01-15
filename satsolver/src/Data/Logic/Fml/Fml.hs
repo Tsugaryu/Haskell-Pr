@@ -91,9 +91,6 @@ prettyFormat (Equiv p q) = "(" ++ prettyFormat p ++ " <=> " ++ prettyFormat q ++
 prettyFormat (Not p) = "-" ++ prettyFormat p
 prettyFormat (Final v) = show v
 
-
-
-
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
 varsWrapper :: (Eq a) => Fml a -> [Var.Var a]
@@ -325,14 +322,15 @@ isCCNF (Or r (Or p q)) = False
 isCCNF f@(Or p q) = isOneClause f
 isCCNF (Final v) = True
 
---{---Aller plus loin
---Une fonction de comparaison risque d'être utile pour les cas And/Or p p
---simplify :: Fml a -> Fml a
---simplify (And   p q) = if map prettyFormat [p] == map prettyFormat [q]
---                       then p
---                       else And (simplify p) (simplify q)
---simplify (Or   p q) = if fmap (prettyFormat p) == fmap (prettyFormat q)
---                                             then p
---                                             else Or (simplify p) (simplify q)
---simplify (Not (Not p)) = p
---simplify f@(Final v) = f
+-- Aller plus loin
+-- Une fonction de comparaison risque d'être utile pour les cas And/Or p p
+{-simplify :: Fml a -> Fml a
+simplify (And p q) = if List.isSubsequenceOf (prettyFormat p) (prettyFormat q) && List.isSubsequenceOf (prettyFormat q) (prettyFormat p)
+                     then p
+                     else And (simplify p) (simplify q)
+simplify (Or p q) = if List.isSubsequenceOf (prettyFormat p) (prettyFormat q) && List.isSubsequenceOf (prettyFormat q) (prettyFormat p)
+                    then p
+                    else Or (simplify p) (simplify q)
+simplify (Not (Not p)) = p
+simplify f@(Final v) = f
+-}
