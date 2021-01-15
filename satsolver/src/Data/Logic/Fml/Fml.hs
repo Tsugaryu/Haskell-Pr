@@ -315,6 +315,8 @@ switchAlgo fml@(And p q)
   | not (isOneClause p) && not (isOneClause q) =
     translateAlgo fml
   | otherwise = switchAlgo q
+switchAlgo fml@(Final v)=fml
+switchAlgo fml@(Or p q )=fml--cas ou on tombe sur un Or à l'entree on renvoie directement la formule on pourra rien faire de plus
 
 toCCNF :: Fml a -> Fml a
 toCCNF a = switchAlgo (toCNF a)
