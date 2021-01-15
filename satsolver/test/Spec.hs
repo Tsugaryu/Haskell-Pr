@@ -57,7 +57,8 @@ fmlTests = testGroup "Fml tests"
        assertEqual "Test isUniversalNOr function" True $ Fml.isUniversalNOr(Fml.NOr (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test toCCNF function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+       assertEqual "Test toUniversalNAnd function" "(A+B) . ( (B+C) . ( C +D ) . ( D+ E) ) )" (Fml.prettyFormat $  Fml.toCCNF(Fml.And ( Fml.And(Fml.Or(Fml.Final (Var.mk "A")) (Fml.Final (Var.mk "B")) ) (Fml.Or( Fml.Final (Var.mk "B")) (Fml.Final (Var.mk "C")))) ( Fml.And(Fml.Or(Fml.Final (Var.mk "C")) (Fml.Final (Var.mk "D")) ) (Fml.Or(Fml.Final (Var.mk "D")) (Fml.Final (Var.mk "E")))) ))
+
 
   , testCase "Test isCCNF function" $
       assertEqual "Test isCCNF function" True $ Fml.isCCNF(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Or(Fml.Final (Var.mk "x2"))(Fml.Final (Var.mk "x3")) ))

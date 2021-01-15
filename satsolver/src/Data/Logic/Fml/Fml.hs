@@ -26,8 +26,8 @@ module Data.Logic.Fml.Fml
     -- * Transforming
     toNNF,
     toCNF,
+    toCCNF,
 --    simplify,
-    --, toCCNF
     toDNF,
     toUniversalNAnd,
     toUniversalNOr,
