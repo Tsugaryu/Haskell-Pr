@@ -42,7 +42,7 @@ fmlTests = testGroup "Fml tests"
       assertEqual "Test isCCNF function" True $ Fml.isCNF(Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isDNF function" $
-      assertEqual "Test isCCNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
+      assertEqual "Test isDNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
 
   , testCase "Test toUniversalNAnd function" $
      assertEqual "Test toUniversalNAnd function" "((((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\"))) ~. ((\"p\" ~. (\"q\" ~. \"q\")) ~. (\"p\" ~. (\"q\" ~. \"q\")))) ~. ((((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\")) ~. (((\"p\" ~. \"p\") ~. \"q\") ~. ((\"p\" ~. \"p\") ~. \"q\"))))" (Fml.prettyFormat $  Fml.toUniversalNAnd(Fml.XOr (Fml.Final (Var.mk "p")) (Fml.Final (Var.mk "q"))))

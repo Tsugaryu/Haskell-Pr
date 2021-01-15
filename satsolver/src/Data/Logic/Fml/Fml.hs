@@ -25,8 +25,8 @@ module Data.Logic.Fml.Fml
     -- * Transforming
     toNNF,
     toCNF,
+    --simplify,
     toCCNF,
---    simplify,
     toDNF,
     toUniversalNAnd,
     toUniversalNOr,
@@ -90,9 +90,6 @@ prettyFormat (Imply p q) = "(" ++ prettyFormat p ++ " => " ++ prettyFormat q ++ 
 prettyFormat (Equiv p q) = "(" ++ prettyFormat p ++ " <=> " ++ prettyFormat q ++ ")"
 prettyFormat (Not p) = "-" ++ prettyFormat p
 prettyFormat (Final v) = show v
-
-
-
 
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
@@ -323,18 +320,19 @@ toCCNF a = switchAlgo (toCNF a)
 
 isCCNF :: Fml a -> Bool
 isCCNF (And p q) = isOneClause p && isCCNF q
-isCCNF f@(Or p q ) = isOneClause f
 isCCNF (Or r (Or p q)) = False
+isCCNF f@(Or p q) = isOneClause f
 isCCNF (Final v) = True
 
---{---Aller plus loin
---Une fonction de comparaison risque d'être utile pour les cas And/Or p p
---simplify :: Fml a -> Fml a
---simplify (And   p q) = if map prettyFormat [p] == map prettyFormat [q]
---                       then p
---                       else And (simplify p) (simplify q)
---simplify (Or   p q) = if fmap (prettyFormat p) == fmap (prettyFormat q)
---                                             then p
---                                             else Or (simplify p) (simplify q)
---simplify (Not (Not p)) = p
---simplify f@(Final v) = f
+-- Aller plus loin
+-- L'idée était vu qu'on ne pouvait comparer avec Fml, de comparer les formules avec des Strings. Malheureusement nous n'avons pas pu trouver une méthode satisfaisante pour le faire
+{-simplify :: Fml a -> Fml a
+simplify (And p q) = if List.isSubsequenceOf (prettyFormat p) (prettyFormat q) && List.isSubsequenceOf (prettyFormat q) (prettyFormat p)
+                     then p
+                     else And (simplify p) (simplify q)
+simplify (Or p q) = if List.isSubsequenceOf (prettyFormat p) (prettyFormat q) && List.isSubsequenceOf (prettyFormat q) (prettyFormat p)
+                    then p
+                    else Or (simplify p) (simplify q)
+simplify (Not (Not p)) = p
+simplify f@(Final v) = f
+-}
