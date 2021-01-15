@@ -88,6 +88,8 @@ prettyFormat (Equiv p q) = "(" ++ prettyFormat p ++ " <=> " ++ prettyFormat q ++
 prettyFormat (Not p) = "-" ++ prettyFormat p
 prettyFormat (Final v) = show v
 
+
+
 -- |’vars’ @p@ returns all variables that occur in formula @p@. Duplicate
 -- --  occurrences are removed.
 varsWrapper :: (Eq a) => Fml a -> [Var.Var a]
@@ -139,7 +141,9 @@ convertConnector (XOr p q) = Or (And (convertConnector p) (Not (convertConnector
 convertConnector (XNOr p q) = Or (And (convertConnector p) (convertConnector q)) (And (Not (convertConnector p)) (Not (convertConnector q))) -- equivaut a (p n q) v ( ¬p n ¬q)
 convertConnector (Imply p q) = Or (Not (convertConnector p)) (convertConnector q) -- equivaut à ¬p ∨ q
 convertConnector (Equiv p q) = Or (And (convertConnector p) (convertConnector q)) (And (Not (convertConnector q)) (Not (convertConnector p))) -- equivaut a (p ∧ q) ∨ (¬q ∧ ¬p)
-convertConnector (Not p) = p
+convertConnector (And p q) =And (convertConnector p) (convertConnector q)
+convertConnector (Or p q) = Or ( convertConnector p) (convertConnector q)
+convertConnector (Not p) = convertConnector p
 convertConnector f@(Final v) = f
 
 ---- La relation de DeMorgan dit que ¬(pnq)<-> ¬p u ¬q et ¬puq <-> ¬p n ¬q
@@ -156,6 +160,7 @@ delNegation (Not (Not p)) = delNegation p
 delNegation (Not p) = Not (delNegation p)
 delNegation (And p q) = And (delNegation p) (delNegation q)
 delNegation (Or p q) = Or (delNegation p) (delNegation q)
+delNegation f@(Final v) = f
 
 toNNF :: Fml a -> Fml a
 toNNF = delNegation . deMorgan . convertConnector
@@ -177,7 +182,7 @@ distribVToN (Or p (And q r)) = And (distribVToN (Or (distribVToN p) (distribVToN
 distribVToN (Or (And q r) p) = And (Or (distribVToN p) (distribVToN q)) (Or (distribVToN p) (distribVToN r))
 distribVToN (And p q) = And (distribVToN p) (distribVToN q)
 distribVToN (Or p q) = Or (distribVToN p) (distribVToN q)
-
+distribVToN f@(Final v) = f
 --
 ----TODO : chercher un moyen pour qu'on puisse prendre soit la fonction distribVToN ou distribNToV
 ---- | Pour connaitre le nombre de Cycle, il est nécessaire d'appeler la fonction depth
@@ -199,6 +204,8 @@ distribNtoV (And p (Or q r)) = Or (distribNtoV (And (distribNtoV p) (distribNtoV
 distribNtoV (And (Or q r) p) = Or (And (distribNtoV p) (distribNtoV q)) (And (distribNtoV p) (distribNtoV r))
 distribNtoV (And p q) = And (distribNtoV p) (distribNtoV q)
 distribNtoV (Or p q) = Or (distribNtoV p) (distribNtoV q)
+distribNtoV f@(Final v) = f
+
 
 toDNF :: Fml a -> Fml a
 toDNF = distribNtoV . toNNF
@@ -247,7 +254,7 @@ toNAND :: Fml a -> Fml a
 toNAND (Not p) = NAnd (toNAND p) (toNAND p) --NAND = fleche du haut NOR fleche du bas
 toNAND (And p q) = NAnd (NAnd (toNAND p) (toNAND q)) (NAnd (toNAND p) (toNAND q))
 toNAND (Or p q) = NAnd (NAnd (toNAND p) (toNAND p)) (NAnd (toNAND q) (toNAND q))
-
+toNAND f@(Final v) = f
 --
 toUniversalNAnd :: Fml a -> Fml a
 toUniversalNAnd  = toNAND . toNNF
@@ -257,7 +264,7 @@ toNOR :: Fml a -> Fml a
 toNOR (Not p) = NOr (toNOR p) (toNOR p) --NAND = fleche du haut NOR fleche du bas
 toNOR (And p q) = NOr (NOr (toNOR p) (toNOR p)) (NOr (toNOR q) (toNOR q))
 toNOR (Or p q) = NOr (NOr (toNOR p) (toNOR q)) (NOr (toNOR p) (toNOR q))
-
+toNOR f@(Final v) = f
 --
 toUniversalNOr :: Fml a -> Fml a
 toUniversalNOr = toNOR . toNNF
@@ -296,6 +303,7 @@ switcher (And p q) = And q (switchAlgo p)
 isOneClause :: Fml a -> Bool
 isOneClause (And p q) = False
 isOneClause (Or p q) = True
+isOneClause f@(Final v) = True
 
 switchAlgo :: Fml a -> Fml a
 switchAlgo fml@(And p q)

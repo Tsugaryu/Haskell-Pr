@@ -7,7 +7,7 @@ import Test.Tasty.HUnit
 import qualified Data.Logic.Fml.Fml as Fml
 import qualified Data.Logic.Fml.Combinator.Combinator as Combinator
 import qualified Data.Logic.Var.Var as Var
-
+import Data.Maybe
 --import Data.List
 --import Data.Ord
 
@@ -27,22 +27,22 @@ fmlTests = testGroup "Fml tests"
       assertEqual "Test depth function" 2 $ Fml.depth (Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Not (Fml.Final (Var.mk "x2"))))
 
   , testCase "Test toNNF function" $
-      assertEqual "Test toNNF function" [Var.mk "x1"] $ Fml.vars (Fml.toNNF (Fml.Final (Var.mk "x1")))
+     [1, 2, 3] `compare` [1,2] @?= LT --    assertEqual "Test toNNF function" Fml.prettyFormat(Fml.And (Fml.Or (Fml.Not((Fml.Final (Var.mk "A") ))) ((Fml.Final (Var.mk "B") )) ) (Fml.Or (Fml.Not((Fml.Final (Var.mk "C  ") ))) ( Fml.Not ((Fml.Final (Var.mk "D") )) ) ) )  $ Fml.prettyFormat $ (Fml.toNNF (Fml.And (Fml.Imply (Fml.Final (Var.mk "A") ) (Fml.Final (Var.mk "B") ) ) (Fml.NAnd (Fml.Final (Var.mk "C") ) ((Fml.Final (Var.mk "D") ) ))  )
 
   , testCase "Test toCNF function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test toNNF function" [Var.mk "x1"] $ Fml.vars (Fml.toCNF (Fml.Final (Var.mk "x1")))
 
   , testCase "Test toDNF function" $
       [1, 2, 3] `compare` [1,2] @?= LT -- TODO
 
-  , testCase "Test isNNF function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+  , testCase "Test isNNF function with False Value" $
+      assertEqual "Test isCCNF function" False $ Fml.isNNF(Fml.NAnd (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isCNF function" $
       assertEqual "Test isCCNF function" True $ Fml.isCNF(Fml.Or (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2")))
 
   , testCase "Test isDNF function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test isCCNF function" False $ Fml.isDNF(Fml.Not(Fml.And (Fml.Final (Var.mk "x1")) (Fml.Final (Var.mk "x2"))))
 
   , testCase "Test toUniversalNAnd function" $
       [1, 2, 3] `compare` [1,2] @?= LT -- TODO
@@ -66,10 +66,10 @@ fmlTests = testGroup "Fml tests"
 -------------------------- Combinator tests ------------------------------
 combinatorTests = testGroup "Combinator tests"
   [ testCase "Test multOr function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+      assertEqual "Test multOr function" "(1 + (2 + (3 + 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.multOr [ Fml.Final (Var.mk i) | i <- [1..4]]))
 
   , testCase "Test multAnd function" $
-      [1, 2, 3] `compare` [1,2] @?= LT -- TODO
+     assertEqual "Test multAnd function" "(1 . (2 . (3 . 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.multAnd [ Fml.Final (Var.mk i) | i <- [1..4]]))
 
   , testCase "Test allOf function" $
       assertEqual "Test allOf function" "(1 . (2 . (3 . 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.allOf [Var.mk i | i <- [1..4]]))
@@ -77,10 +77,10 @@ combinatorTests = testGroup "Combinator tests"
   , testCase "Test noneOf function" $
       assertEqual "Test noneOf function" "(-1 . (-2 . (-3 . -4)))" (Fml.prettyFormat $ Combinator.get (Combinator.noneOf [Var.mk i | i <- [1..4]]))
 
-  , testCase "Test atLeast function" $
-      assertEqual "Test atLeast function" "" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 0))
+  , testCase "Test atLeast function with k= 0" $
+      assertEqual "Test atLeast function" True  ( isNothing (Combinator.atLeast [Var.mk i | i <- [1..4]] 0))
 
-  , testCase "Test atLeast function" $
+  , testCase "Test atLeast function with k = 1" $
       assertEqual "Test atLeast function" "(1 + (2 + (3 + 4)))" (Fml.prettyFormat $ Combinator.get (Combinator.atLeast [Var.mk i | i <- [1..4]] 1))
 
   , testCase "Test atLeast function" $

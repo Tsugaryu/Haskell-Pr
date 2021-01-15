@@ -98,7 +98,8 @@ noneOf elements = multAnd (fromVarToNegFml elements)
 --return tab de formule
 composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> [Var.Var a] -> Int -> [Fml.Fml a]
 composeSuccessiveFml func elt [] n = []
-composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func ( elt ++ [x] ) ]  --return le res
+composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func (elt) ]  --return le res
+--composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func ( elt ++ [x] ) ]  --return le res
 composeSuccessiveFml func elt [x] n = [ multAndContent $ func ( elt ++ [x] )]
 composeSuccessiveFml func elt (x : elements) n =  if length elements < (n - 1)
                                                   then []
@@ -106,11 +107,13 @@ composeSuccessiveFml func elt (x : elements) n =  if length elements < (n - 1)
 
 createFmlList :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> Int -> [Fml.Fml a]
 createFmlList func [] n = []
+createFmlList func [x] n  = composeSuccessiveFml func [x] [x] (n - 1)
 createFmlList func (x : elements) n = composeSuccessiveFml func [x] elements (n - 1) ++ createFmlList func elements n
 
 --Qd la fonction sera finie et checké on proposera une amélioration en utilisant allOf
 atLeast :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atLeast [] k = Nothing
+atLeast elements 0 = Nothing
 atLeast elements k = if k<=0
                         then Nothing
                         else multOr (createFmlList fromVarToFml elements k)
