@@ -96,19 +96,34 @@ noneOf elements = multAnd (fromVarToNegFml elements)
 --Buffer de parcours
 -- Nombre d element pour la formule
 --return tab de formule
-composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> [Var.Var a] -> Int -> [Fml.Fml a]
-composeSuccessiveFml func elt [] n = []
-composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func (elt) ]  --return le res
---composeSuccessiveFml func elt (x : elements) 0 = [ multAndContent $ func ( elt ++ [x] ) ]  --return le res
-composeSuccessiveFml func elt [x] n = [ multAndContent $ func ( elt ++ [x] )]
-composeSuccessiveFml func elt (x : elements) n =  if length elements < (n - 1)
-                                                  then []
-                                                  else composeSuccessiveFml func ( elt ++ [x] ) elements (n - 1) ++ composeSuccessiveFml func elt (tail elements) (n - 1)
 
-createFmlList :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> Int -> [Fml.Fml a]
-createFmlList func [] n = []
-createFmlList func [x] n  = composeSuccessiveFml func [x] [x] (n - 1)
-createFmlList func (x : elements) n = composeSuccessiveFml func [x] elements (n - 1) ++ createFmlList func elements n
+
+--Si n = 0 on renvoie directement la liste
+composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> [Var.Var a] -> Int -> Int -> [Fml.Fml a]
+composeSuccessiveFml func elt [] k n = []
+composeSuccessiveFml func elt (x : elements) k 0 = if length(elt)==k
+                                                   then [ multAndContent $ func (elt) ]  --return le res
+                                                   else []
+composeSuccessiveFml func elt [x] k n = if length(elt ++ [x])==k
+                                        then [ multAndContent $ func ( elt ++ [x] )]
+                                        else []
+composeSuccessiveFml func elt (x : elements) k n =  if length elements < (n - 1)
+                                                    then []
+                                                    else composeSuccessiveFml func ( elt ++ [x] ) elements k (n - 1) ++ composeSuccessiveFml func elt ( elements) k (n)
+--composeSuccessiveFml func elt [] k n = [] --peut etre besoin de le traiter comme un cas  1 avc un elt ds le tableau Buffer
+--composeSuccessiveFml func elt (x : elements) k 1 = [ multAndContent $ func (elt ++ [x] ) ]  --return le res --Si erreur ajout d'un 2,4 ds atMostOne alors sa vient de la
+--composeSuccessiveFml func elt [x] k n = if length(elt ++ [x])==k
+--                                        then [ multAndContent $ func ( elt ++ [x] )] --Qd il n y a plus qu'un element dans
+--                                        else []
+--composeSuccessiveFml func elt (x : elements) k n = composeSuccessiveFml func ( elt ++ [x] ) elements k (n - 1) ++ composeSuccessiveFml func elt elements k (n - 1)
+
+createFmlList :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> Int -> Int -> [Fml.Fml a]
+--createFmlList func [] effectiveSize n = []
+--createFmlList func [x] effectiveSize n  = composeSuccessiveFml func [x] [x] effectiveSize (n - 1)
+--createFmlList func (x : elements) effectiveSize n = composeSuccessiveFml func [x] elements effectiveSize (n - 1) ++ createFmlList func elements effectiveSize n
+createFmlList func [] effectiveSize n = []
+createFmlList func [x] effectiveSize n  = composeSuccessiveFml func [x] [x] effectiveSize (n - 1)
+createFmlList func (x : elements) effectiveSize n = composeSuccessiveFml func [x] elements effectiveSize (n - 1) ++ createFmlList func elements effectiveSize n
 
 --Qd la fonction sera finie et checké on proposera une amélioration en utilisant allOf
 atLeast :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
@@ -116,7 +131,7 @@ atLeast [] k = Nothing
 atLeast elements 0 = Nothing
 atLeast elements k = if k<=0
                         then Nothing
-                        else multOr (createFmlList fromVarToFml elements k)
+                        else multOr (createFmlList fromVarToFml elements k k)
 
 --atLeast (elt:elements) k =  Just( Fml.Or( Maybe.fromJust (allOf ( take k elements ))) (Maybe.fromJust (noneOf (drop k elements ))) )
 --Fml.Or ( Just ( allOf ( take k elements ) ) )   (  Just noneOf (drop k elements )    )
@@ -139,7 +154,7 @@ atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atMost [] n = Nothing
 atMost elements n =if n<=0
                     then Nothing
-                    else multOr (createFmlList fromVarToNegFml elements (length elements - n))
+                    else multOr (createFmlList fromVarToNegFml elements (length elements - n) (length elements - n))
 
 -- | ’atMostOne’ @vs@ returns a formula that is satisfiable iff at most one
 --  variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
