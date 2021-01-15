@@ -18,7 +18,6 @@ module Data.Logic.Fml.Fml
     isUniversalNAnd,
     isUniversalNOr,
 
-
     -- * querying
     depth,
     vars,

@@ -101,15 +101,11 @@ noneOf elements = multAnd (fromVarToNegFml elements)
 --Si n = 0 on renvoie directement la liste
 composeSuccessiveFml :: ([Var.Var a] -> [Fml.Fml a]) -> [Var.Var a] -> [Var.Var a] -> Int -> Int -> [Fml.Fml a]
 composeSuccessiveFml func elt [] k n = []
-composeSuccessiveFml func elt (x : elements) k 0 = if length(elt)==k
-                                                   then [ multAndContent $ func (elt) ]  --return le res
-                                                   else []
-composeSuccessiveFml func elt [x] k n = if length(elt ++ [x])==k
-                                        then [ multAndContent $ func ( elt ++ [x] )]
-                                        else []
+composeSuccessiveFml func elt (x : elements) k 0 = [multAndContent $ func elt | length elt == k]
+composeSuccessiveFml func elt [x] k n = [multAndContent $ func (elt ++ [x]) | length (elt ++ [x]) == k]
 composeSuccessiveFml func elt (x : elements) k n =  if length elements < (n - 1)
                                                     then []
-                                                    else composeSuccessiveFml func ( elt ++ [x] ) elements k (n - 1) ++ composeSuccessiveFml func elt ( elements) k (n)
+                                                    else composeSuccessiveFml func ( elt ++ [x] ) elements k (n - 1) ++ composeSuccessiveFml func elt elements k n
 --composeSuccessiveFml func elt [] k n = [] --peut etre besoin de le traiter comme un cas  1 avc un elt ds le tableau Buffer
 --composeSuccessiveFml func elt (x : elements) k 1 = [ multAndContent $ func (elt ++ [x] ) ]  --return le res --Si erreur ajout d'un 2,4 ds atMostOne alors sa vient de la
 --composeSuccessiveFml func elt [x] k n = if length(elt ++ [x])==k
@@ -154,7 +150,7 @@ atLeastOne elements = atLeast elements 1
 -- définir le cas ou n = 1
 atMost :: [Var.Var a] -> Int -> Maybe (Fml.Fml a)
 atMost [] n = Nothing
-atMost elements n =if n<=0
+atMost elements n = if n<=0
                     then Nothing
                     else multOr (createFmlList fromVarToNegFml elements (length elements - n) (length elements - n))
 
@@ -174,8 +170,6 @@ exactly [] n = Nothing
 exactly elements n = if n<=0
                      then Nothing
                      else  Just (Fml.And (get (atLeast elements n)) (get (atMost elements n)))
-
---
 
 -- | ’exactlyOne’ @vs@ returns a formula that is satisfiable iff exactly one
 --   variable in @vs@ is true. The function returns @Nothing@ if @vs@ is the
